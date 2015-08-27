@@ -468,7 +468,7 @@ function Argv (processArgs, cwd) {
     var handlerKeys = Object.keys(self.getCommandHandlers())
     for (var i = 0, command; (command = handlerKeys[i]) !== undefined; i++) {
       if (~argv._.indexOf(command)) {
-        self.getCommandHandlers()[command](self.reset())
+        runCommand(command, self, argv)
         return self.argv
       }
     }
@@ -529,6 +529,11 @@ function Argv (processArgs, cwd) {
     setPlaceholderKeys(argv)
 
     return argv
+  }
+
+  function runCommand (command, yargs, argv) {
+    setPlaceholderKeys(argv)
+    yargs.getCommandHandlers()[command](yargs.reset(), argv)
   }
 
   function setPlaceholderKeys (argv) {
