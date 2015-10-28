@@ -5,6 +5,7 @@ var path = require('path')
 var Usage = require('./lib/usage')
 var Validation = require('./lib/validation')
 var Y18n = require('y18n')
+var readline = require('readline')
 
 Argv(process.argv.slice(2))
 
@@ -71,6 +72,7 @@ function Argv (processArgs, cwd) {
     strict = false
     helpOpt = null
     versionOpt = null
+    interactiveOpt = null
     commandHandlers = {}
     self.parsed = false
 
@@ -375,6 +377,67 @@ function Argv (processArgs, cwd) {
     return usage.help()
   }
 
+  self.interactive = function (opt, callback) {
+    interactiveOpt = opt
+    var args = parseArgs(processArgs) // run parser, if it has not already been executed.
+    if (args[opt]) {
+      var demanded = self.getDemanded()
+      var keys = Object.keys(demanded).filter(function(key) {
+        return !args[key]
+      })
+
+      if (keys.length === 0) return callback(args)
+
+      var rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+      })
+
+      function nextOption() {
+        var key = keys[0]
+        if (!key) {
+          rl.close()
+          return callback(args)
+        }
+
+        var message = key
+        if (options.choices[key]) {
+          message += '\n'
+          message += options.choices[key].map(function(value) { return '- '+value }).join('\n')
+          message += '\n\nSelect one from the list'
+        } else if (~options.boolean.indexOf(key)) {
+          message += ' (y/Y)'
+        }
+        message += ': '
+
+        rl.question(message, function(answer) {
+          // validate answer. If valid remove the option being processed
+          var valid = true
+          if (~options.string.indexOf(key)) {
+            valid = answer.length > 0
+          } else if (options.choices[key]) {
+            valid = ~options.choices[key].indexOf(answer)
+          } else if (~options.boolean.indexOf(key)) {
+            valid = ~['y', 'yes', 'n', 'no'].indexOf(answer.toLowerCase())
+          }
+
+          if (valid) {
+            if (~options.boolean.indexOf(key)) {
+              answer = answer.substring(0, 1) === 'y'
+            }
+            keys.shift()
+            args[key] = answer
+          } else {
+            console.log('Invalid answer: ', answer)
+          }
+          nextOption()
+        })
+      }
+
+      nextOption()
+    }
+  }
+
   var completionCommand = null
   self.completion = function (cmd, desc, fn) {
     // a function to execute when generating
@@ -512,6 +575,7 @@ function Argv (processArgs, cwd) {
     }
 
     var helpOrVersion = false
+    var interactive = false
     Object.keys(argv).forEach(function (key) {
       if (key === helpOpt && argv[key]) {
         helpOrVersion = true
@@ -525,6 +589,8 @@ function Argv (processArgs, cwd) {
         if (exitProcess) {
           process.exit(0)
         }
+      } else if (key === interactiveOpt && argv[key]) {
+        interactive = true
       }
     })
 
@@ -537,8 +603,8 @@ function Argv (processArgs, cwd) {
       // bother with validation.
       if (!argv[completion.completionKey]) {
         validation.nonOptionCount(argv)
-        validation.missingArgumentValue(argv)
-        validation.requiredArguments(argv)
+        if (!interactive) validation.missingArgumentValue(argv)
+        if (!interactive) validation.requiredArguments(argv)
         if (strict) validation.unknownArguments(argv, aliases)
         validation.customChecks(argv, aliases)
         validation.limitedChoices(argv)
