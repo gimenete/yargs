@@ -24,6 +24,14 @@ var argv = yargs
       requiresArg: true,
       required: true
     },
+    multi: {
+      alias: 'm',
+      choices: ['foo', 'bar'],
+      description: "<choice> a choice",
+      requiresArg: true,
+      required: true,
+      type: 'array'
+    },
     bool: {
       alias: 'b',
       boolean: true,
@@ -38,4 +46,6 @@ var argv = yargs
 
     console.log("input:", argv.input);
     console.log("output:", argv.output);
+    console.log("choice:", argv.choice);
+    console.log("bool:", argv.bool);
   });
