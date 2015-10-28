@@ -20,14 +20,14 @@ var argv = yargs
     choice: {
       alias: 'c',
       choices: ['foo', 'bar'],
-      description: "<choice> a choice",
+      description: "A simple choice",
       requiresArg: true,
       required: true
     },
     multi: {
       alias: 'm',
       choices: ['foo', 'bar'],
-      description: "<choice> a choice",
+      description: "A multiple choide",
       requiresArg: true,
       required: true,
       type: 'array'
@@ -35,7 +35,7 @@ var argv = yargs
     bool: {
       alias: 'b',
       boolean: true,
-      description: "<choice> a choice",
+      description: "A boolean value",
       requiresArg: true,
       required: true
     }
