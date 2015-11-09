@@ -27,25 +27,27 @@ var argv = yargs
     multi: {
       alias: 'm',
       choices: ['foo', 'bar'],
-      description: "A multiple choide",
+      description: "A multiple choice",
       requiresArg: true,
       required: true,
       type: 'array'
     },
-    bool: {
-      alias: 'b',
-      boolean: true,
-      description: "A boolean value",
-      requiresArg: true,
-      required: true
-    }
+    // bool: {
+    //   alias: 'b',
+    //   boolean: true,
+    //   description: "A boolean value",
+    //   requiresArg: true,
+    //   required: true
+    // }
   })
-  .interactive('i', function(argv) {
+  .interactive('i')
+  .parseAsync(function(argv) {
     console.log('Inspecting options');
     console.dir(argv);
 
     console.log("input:", argv.input);
     console.log("output:", argv.output);
     console.log("choice:", argv.choice);
+    console.log("multi:", argv.multi);
     console.log("bool:", argv.bool);
   });

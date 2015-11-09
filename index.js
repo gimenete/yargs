@@ -377,11 +377,20 @@ function Argv (processArgs, cwd) {
     return usage.help()
   }
 
+  var interactiveOpt = null
   self.interactive = function (opt, callback) {
     interactiveOpt = opt
-    var args = parseArgs(processArgs) // run parser, if it has not already been executed.
-    if (args[opt]) {
+    return self
+  }
+
+  self.parseAsync = function (callback) {
+    var args = parseArgs(processArgs)
+    if (args[interactiveOpt]) {
       Interactive(self, usage, args, callback)
+    } else {
+      process.nextTick(function () {
+        callback(args)
+      })
     }
   }
 

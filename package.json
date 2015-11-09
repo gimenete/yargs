@@ -11,6 +11,7 @@
     "LICENSE"
   ],
   "dependencies": {
+    "ansi-regex": "^2.0.0",
     "camelcase": "^1.2.1",
     "cliui": "^3.0.3",
     "decamelize": "^1.0.0",
