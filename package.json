@@ -22,6 +22,7 @@
   "devDependencies": {
     "ansi-regex": "^2.0.0",
     "chai": "^3.3.0",
+    "chai-string": "^1.1.6",
     "chalk": "^1.1.1",
     "coveralls": "^2.11.4",
     "es6-promise": "^3.0.2",

@@ -385,13 +385,7 @@ function Argv (processArgs, cwd) {
 
   self.parseAsync = function (callback) {
     var args = parseArgs(processArgs)
-    if (args[interactiveOpt]) {
-      Interactive(self, usage, args, callback)
-    } else {
-      process.nextTick(function () {
-        callback(args)
-      })
-    }
+    Interactive(self, usage, args, callback)
   }
 
   var completionCommand = null

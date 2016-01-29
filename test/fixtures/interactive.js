@@ -38,6 +38,13 @@ yargs
       description: 'A boolean value',
       requiresArg: true,
       required: true
+    },
+    def: {
+      alias: 'default',
+      description: 'default something',
+      requiresArg: true,
+      required: true,
+      'default': 'foobar'
     }
   })
   .interactive('i')

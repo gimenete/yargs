@@ -32,13 +32,13 @@ var argv = yargs
       required: true,
       type: 'array'
     },
-    // bool: {
-    //   alias: 'b',
-    //   boolean: true,
-    //   description: "A boolean value",
-    //   requiresArg: true,
-    //   required: true
-    // }
+    bool: {
+      alias: 'b',
+      boolean: true,
+      description: "A boolean value",
+      requiresArg: true,
+      required: true
+    }
   })
   .interactive('i')
   .parseAsync(function(argv) {
